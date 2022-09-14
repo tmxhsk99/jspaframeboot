@@ -29,6 +29,19 @@ class PostControllerTest {
 
     // 기존 form 방식의 key value 방식으 애매하다.
     // 그러므로 json 으로 보내야한다.
+    @Test
+    @DisplayName("/posts_json 로 post 요청 contentType = APPLICATION_JSON , content에 실제 내용 설정")
+    void sendJson() throws Exception {
+        //expected
+        mockMvc.perform(post("/posts_json")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\": \"제목입니다.\",\"content\": \"내용입니다.\"}")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("Hello world"))
+                .andDo(print());
+    }
+
 
 //================================================================================
     // 글 제목
