@@ -1,0 +1,5 @@
+# test/resources/application.yml
+server:
+  servlet:
+    encoding:
+      force-response: true

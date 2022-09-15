@@ -1,9 +1,12 @@
 package com.kjh.jspaframeboot.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.servlet.HttpEncodingAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,6 +22,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PostControllerTest {
     @Autowired
     MockMvc mockMvc;
+
+    @Test
+    @DisplayName("/posts 요청시 title 값은 필수다.")
+    void sendJson_required_title() throws Exception {
+        //제목을 제거한다.
+        mockMvc.perform(post("/posts_json")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\": \"\",\"content\": \"내용입니다.\"}")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("Hello world"))
+                .andDo(print());
+    }
+
 
     // 글 제목
     // 글 내용
