@@ -32,7 +32,8 @@ class PostControllerTest {
                         .content("{\"title\": \"\",\"content\": \"내용입니다.\"}")
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().string("Hello world"))
+                //.andExpect(content().string("Hello world")) // 결과 내용 검증
+                .andExpect(jsonPath("$.title").value("타이틀을 입력해주세요.")) //타이틀 에러시 joson 에러 메시지 검증
                 .andDo(print());
     }
 
