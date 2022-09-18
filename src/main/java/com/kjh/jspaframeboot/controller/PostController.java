@@ -87,4 +87,10 @@ public class PostController {
 //            // {"title" : "..수십억 글자"}
 //            throw new Exception("타이틀 값이 없다.");
 //        }
+
+    @PostMapping("/posts_use_controller_advice")
+    public Map<String,String> posts_use_(@RequestBody @Valid PostCreateDto params) throws Exception {
+
+        return new HashMap<>();
+    }
 }

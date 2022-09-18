@@ -23,6 +23,19 @@ class PostControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+
+    @Test
+    @DisplayName("/posts 요청시 ControllerAdvice.")
+    void sendJson_use_controller_advice() throws Exception {
+        //제목을 제거한다.
+        mockMvc.perform(post("/posts_use_controller_advice")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\": \"\",\"content\": \"내용입니다.\"}")
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
     @Test
     @DisplayName("/posts 요청시 title 값은 필수다.")
     void sendJson_required_title() throws Exception {
