@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.HttpEncodingAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,14 +26,17 @@ class PostControllerTest {
 
 
     @Test
-    @DisplayName("/posts 요청시 ControllerAdvice.")
+    @DisplayName("/posts 요청시 ControllerAdvice. 에러 확인 테스트")
     void sendJson_use_controller_advice() throws Exception {
         //제목을 제거한다.
         mockMvc.perform(post("/posts_use_controller_advice")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"\",\"content\": \"내용입니다.\"}")
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+                .andExpect(jsonPath("$.validation.title").value("타이틀을 입력해주세요."))
                 .andDo(print());
     }
 
