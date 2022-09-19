@@ -1,11 +1,15 @@
 package com.kjh.jspaframeboot.controller;
 
+import com.kjh.jspaframeboot.repository.PostRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.HttpEncodingAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,15 +18,37 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.transaction.Transactional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest
+@AutoConfigureMockMvc
+@SpringBootTest
+
 class PostControllerTest {
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    PostRepository postRepository;
+
+    @Test
+    @DisplayName("/posts 요청시 DB에 값이 저장된다.")
+    void sendJson_db_save() throws Exception {
+        // when
+        mockMvc.perform(post("/posts/save")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\": \"제목입니다.\",\"content\": \"내용입니다.\"}")
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        // then
+        Assertions.assertThat(postRepository.count()).isEqualTo(1L);
+    }
 
 
     @Test
