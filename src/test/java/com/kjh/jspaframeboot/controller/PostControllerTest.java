@@ -1,41 +1,35 @@
 package com.kjh.jspaframeboot.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.repository.PostRepository;
-import org.assertj.core.api.Assertions;
+import com.kjh.jspaframeboot.request.PostCreateDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.servlet.HttpEncodingAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-
 class PostControllerTest {
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     PostRepository postRepository;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @BeforeEach
     void clean() {
@@ -45,10 +39,19 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 DB에 값이 저장된다.")
     void sendJson_db_save() throws Exception {
+        //given
+        PostCreateDto request = PostCreateDto
+                                .builder()
+                                .title("제목입니다.")
+                                .content("내용입니다.")
+                                .build();
+
+        String jsonString = objectMapper.writeValueAsString(request);
+
         // when
         mockMvc.perform(post("/posts/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"제목입니다.\",\"content\": \"내용입니다.\"}")
+                        .contentType(APPLICATION_JSON)
+                        .content(jsonString)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -66,10 +69,18 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 ControllerAdvice. 에러 확인 테스트")
     void sendJson_use_controller_advice() throws Exception {
+
+        PostCreateDto request = PostCreateDto
+                .builder()
+                .content("내용입니다.")
+                .build();
+
+        String jsonString = objectMapper.writeValueAsString(request);
+
         //제목을 제거한다.
         mockMvc.perform(post("/posts_use_controller_advice")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"\",\"content\": \"내용입니다.\"}")
+                        .contentType(APPLICATION_JSON)
+                        .content(jsonString)
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("400"))
@@ -81,10 +92,16 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 title 값은 필수다.")
     void sendJson_required_title() throws Exception {
+        PostCreateDto request = PostCreateDto
+                .builder()
+                .content("내용입니다.")
+                .build();
+
+        String jsonString = objectMapper.writeValueAsString(request);
         //제목을 제거한다.
         mockMvc.perform(post("/posts_json")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"\",\"content\": \"내용입니다.\"}")
+                        .contentType(APPLICATION_JSON)
+                        .content(jsonString)
                 )
                 .andExpect(status().isOk())
                 //.andExpect(content().string("Hello world")) // 결과 내용 검증
@@ -95,20 +112,27 @@ class PostControllerTest {
 
     // 글 제목
     // 글 내용
-        // 사용자
-            // id
-            // name
-            // level
+    // 사용자
+    // id
+    // name
+    // level
 
     // 기존 form 방식의 key value 방식으 애매하다.
     // 그러므로 json 으로 보내야한다.
     @Test
     @DisplayName("/posts_json 로 post 요청 contentType = APPLICATION_JSON , content에 실제 내용 설정")
     void sendJson() throws Exception {
+        PostCreateDto request = PostCreateDto
+                .builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        String jsonString = objectMapper.writeValueAsString(request);
         //expected
         mockMvc.perform(post("/posts_json")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"제목입니다.\",\"content\": \"내용입니다.\"}")
+                        .contentType(APPLICATION_JSON)
+                        .content(jsonString)
                 )
                 .andExpect(status().isOk())
                 //.andExpect(content().string("Hello world")) //return Type  변경으로 주석처리
@@ -120,6 +144,7 @@ class PostControllerTest {
     // 글 제목
     // 글 내용
     // 예전에는 application/x-www-form-urlencoded 를 많이 사용함
+
     /**
      * Form Encoded 형태로 전달한다.
      */
@@ -128,14 +153,15 @@ class PostControllerTest {
     void simpleControllerRecvObjTest() throws Exception {
         //expected
         mockMvc.perform(post("/posts_recv_object")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("title","글 제목 입니다.")
-                        .param("content","글 내용입니다")
+                        .contentType(APPLICATION_FORM_URLENCODED)
+                        .param("title", "글 제목 입니다.")
+                        .param("content", "글 내용입니다")
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello world"))
                 .andDo(print());
     }
+
     /**
      * Form Encoded 형태로 전달한다.
      */
@@ -144,9 +170,9 @@ class PostControllerTest {
     void simplePostControllerParamMapTest() throws Exception {
         //expected
         mockMvc.perform(post("/posts_pramMap")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("title","글 제목 입니다.")
-                        .param("content","글 내용입니다")
+                        .contentType(APPLICATION_FORM_URLENCODED)
+                        .param("title", "글 제목 입니다.")
+                        .param("content", "글 내용입니다")
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello world"))
@@ -162,9 +188,9 @@ class PostControllerTest {
     void simplePostFormUrlEncodedTest() throws Exception {
         //expected
         mockMvc.perform(post("/posts_form_urlencoded")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("title","글 제목 입니다.")
-                        .param("content","글 내용입니다")
+                        .contentType(APPLICATION_FORM_URLENCODED)
+                        .param("title", "글 제목 입니다.")
+                        .param("content", "글 내용입니다")
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello world"))
