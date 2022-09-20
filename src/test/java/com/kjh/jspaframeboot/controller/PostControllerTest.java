@@ -1,5 +1,6 @@
 package com.kjh.jspaframeboot.controller;
 
+import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.repository.PostRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -35,6 +37,11 @@ class PostControllerTest {
     @Autowired
     PostRepository postRepository;
 
+    @BeforeEach
+    void clean() {
+        postRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("/posts 요청시 DB에 값이 저장된다.")
     void sendJson_db_save() throws Exception {
@@ -47,7 +54,12 @@ class PostControllerTest {
                 .andDo(print());
 
         // then
-        Assertions.assertThat(postRepository.count()).isEqualTo(1L);
+        assertThat(postRepository.count()).isEqualTo(1L);
+
+
+        Post post = postRepository.findAll().get(0);
+        assertThat(post.getTitle()).isEqualTo("제목입니다.");
+        assertThat(post.getContent()).isEqualTo("내용입니다.");
     }
 
 
