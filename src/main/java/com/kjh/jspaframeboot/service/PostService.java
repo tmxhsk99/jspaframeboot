@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 public class PostService {
     private final PostRepository postRepository;
 
-    public void write(PostCreateDto postCreateDto){
+    public Long write(PostCreateDto postCreateDto){
         // postCreate -> Entity
         Post post = Post.builder()
                 .title(postCreateDto.getTitle())
                 .content(postCreateDto.getContent())
                 .build();
-
-        postRepository.save(post);
+        //클라이언트 측에서 데이터관리가 잘 안될 경우는 다시 데이터를 돌려달라고 하는 경우 도있다...
+        return postRepository.save(post).getId();
     }
 }

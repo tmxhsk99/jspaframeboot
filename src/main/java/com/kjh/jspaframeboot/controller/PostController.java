@@ -1,5 +1,6 @@
 package com.kjh.jspaframeboot.controller;
 
+import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.request.PostCreateDto;
 import com.kjh.jspaframeboot.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,17 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/posts/save")
-    public Map<String,String> posts_save(@RequestBody @Valid PostCreateDto request) throws Exception {
-        // repository(params)
-        // ds.save(paramas)
-        postService.write(request);
-        return new HashMap<>();
+    public PostCreateDto posts_save(@RequestBody @Valid PostCreateDto request) throws Exception {
+        // Case1. 저장한 데이터 Entity ->response로 응답하기
+        // Case2. 저장한 데이터 의 primary_id -> response로 응답하기
+        //      Client 에서는 수신한 id를 글 조회 API를 통해서 데이터르 수신 받음
+        // Case3. 응답 필요 없음 -> 클라이언트에서 모든 POST(글) 데이터 context를 잘 관리 함
+        // Bad Case : 서버에서 -> 반드시 이렇게 할껍니다! fix
+        //                  -> 서버에서 차라리 유연한게 대응하는 것이 좋다 -> 코드를 잘 짜야한다!
+        //                  -> 한 번에 일괄적으로 잘 처리 되는 케이스가 없다. -> 잘 관리하는 형태가 중요하다.ㄴ
+        Long postId = postService.write(request);
+
+        return PostCreateDto.builder().id(postId).build();
     }
 
     //Sample Get Route

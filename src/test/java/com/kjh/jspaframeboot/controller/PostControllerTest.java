@@ -49,7 +49,7 @@ class PostControllerTest {
         String jsonString = objectMapper.writeValueAsString(request);
 
         // when
-        mockMvc.perform(post("/posts/save")
+        mockMvc.perform(post("/poWsts/save")
                         .contentType(APPLICATION_JSON)
                         .content(jsonString)
                 )
