@@ -20,6 +20,18 @@ import java.util.Map;
 public class PostController {
     private final PostService postService;
 
+
+    /**
+     *  /posts -> 글 전체 조회 (검색 + 페이징)
+     *  /post/(postId) -> 글 단건 조회
+     */
+
+    /**
+     * 단건 post 저장
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/posts/save")
     public PostCreateDto posts_save(@RequestBody @Valid PostCreateDto request) throws Exception {
         // Case1. 저장한 데이터 Entity ->response로 응답하기
