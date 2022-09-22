@@ -1,5 +1,6 @@
 package com.kjh.jspaframeboot.service;
 
+import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
 import org.assertj.core.api.Assertions;
@@ -23,13 +24,33 @@ class PostServiceTest {
 
 
     @BeforeEach
-    void setting(){
+    void setting() {
         postRepository.deleteAll();
     }
 
     @Test
+    @DisplayName("글 1개 조회")
+    void read_one_post() {
+        //given
+        Post post = Post.builder()
+                .title("goo")
+                .content("gle")
+                .build();
+        postRepository.save(post);
+
+
+        //when
+        Post returnPost = postService.get(post.getId());
+
+        //then
+        assertThat(returnPost).isNotNull();
+        assertThat(returnPost.getTitle()).isEqualTo("goo");
+        assertThat(returnPost.getContent()).isEqualTo("gle");
+    }
+
+    @Test
     @DisplayName("PostService 글 작성 테스트")
-    void post_save_test(){
+    void post_save_test() {
         //given
         PostCreateDto post = PostCreateDto.builder()
                 .title("제목입니다.")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,11 +32,35 @@ class PostControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+
     @BeforeEach
     void clean() {
         postRepository.deleteAll();
     }
 
+
+    @Test
+    @DisplayName("글 1개 조회")
+    void get_post() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("goo")
+                .content("gle")
+                .build();
+        postRepository.save(post);
+
+        //expected [when + then]
+        mockMvc.perform(get("/posts/{postId}",post.getId())
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(post.getId()))
+                .andExpect(jsonPath("$.title").value("goo"))
+                .andExpect(jsonPath("$.content").value("gle"))
+                .andDo(print());
+
+
+    }
+    
     @Test
     @DisplayName("/posts 요청시 DB에 값이 저장된다.")
     void sendJson_db_save() throws Exception {

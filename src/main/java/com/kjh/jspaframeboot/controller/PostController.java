@@ -25,6 +25,11 @@ public class PostController {
      *  /posts -> 글 전체 조회 (검색 + 페이징)
      *  /post/(postId) -> 글 단건 조회
      */
+    @GetMapping("/posts/{postId}")
+    public Post get(@PathVariable(name = "postId") Long id){
+        Post post = postService.get(id);
+        return post;
+    }
 
     /**
      * 단건 post 저장
