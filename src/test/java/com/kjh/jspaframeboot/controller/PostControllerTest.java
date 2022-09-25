@@ -2,9 +2,8 @@ package com.kjh.jspaframeboot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
-import com.kjh.jspaframeboot.repository.PostRepository;
+import com.kjh.jspaframeboot.controller.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
-import com.kjh.jspaframeboot.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

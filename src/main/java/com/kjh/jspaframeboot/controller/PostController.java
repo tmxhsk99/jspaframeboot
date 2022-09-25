@@ -2,6 +2,7 @@ package com.kjh.jspaframeboot.controller;
 
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.response.PostResponse;
 import com.kjh.jspaframeboot.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,9 @@ public class PostController {
      *  /post/(postId) -> 글 단건 조회
      */
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable(name = "postId") Long id){
-        Post post = postService.get(id);
-        return post;
+    public PostResponse get(@PathVariable(name = "postId") Long id){
+        PostResponse postResponse = postService.get(id);
+        return postResponse;
     }
 
     /**

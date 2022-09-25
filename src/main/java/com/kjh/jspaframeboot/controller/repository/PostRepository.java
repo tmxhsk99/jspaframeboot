@@ -1,4 +1,4 @@
-package com.kjh.jspaframeboot.repository;
+package com.kjh.jspaframeboot.controller.repository;
 
 import com.kjh.jspaframeboot.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,13 +1,12 @@
 package com.kjh.jspaframeboot.service;
 
 import com.kjh.jspaframeboot.domain.Post;
-import com.kjh.jspaframeboot.repository.PostRepository;
+import com.kjh.jspaframeboot.controller.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -25,10 +24,22 @@ public class PostService {
         return postRepository.save(post).getId();
     }
 
-    public Post get(Long id) {
+    public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
 
-        return post;
+        PostResponse response = PostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .build();
+
+        /**
+         * 서비스의 크기가 커지면
+         * controller -> WebService -(내부적 파싱 )> Repository
+         *               PostService (뭔가 외부와연동)
+         */
+
+        return response;
     }
 }
