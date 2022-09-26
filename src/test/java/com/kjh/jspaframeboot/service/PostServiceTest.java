@@ -10,7 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 class PostServiceTest {
@@ -26,6 +33,31 @@ class PostServiceTest {
         postRepository.deleteAll();
     }
 
+
+    @Test
+    @DisplayName("글 여러개 조회")
+    void get_postList() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("goo1")
+                .content("gle1")
+                .build();
+        postRepository.save(post);
+
+        Post post2 = Post.builder()
+                .title("goo2")
+                .content("gle2")
+                .build();
+        postRepository.save(post2);
+
+        //when
+        List<PostResponse> posts = postService.getList();
+
+        //then
+        assertThat(2L).isEqualTo(posts.size());
+
+
+    }
     @Test
     @DisplayName("글 1개 조회")
     void read_one_post() {

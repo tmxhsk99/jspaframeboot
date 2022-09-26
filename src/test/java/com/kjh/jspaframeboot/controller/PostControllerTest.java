@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.controller.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+
+import java.util.regex.Matcher;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.MediaType.*;
@@ -37,7 +40,39 @@ class PostControllerTest {
         postRepository.deleteAll();
     }
 
+    @Test
+    @DisplayName("글 여러개 조회")
+    void get_postList() throws Exception {
+        //given
+        Post post1 = Post.builder()
+                .title("title1")
+                .content("google1")
+                .build();
+        postRepository.save(post1);
 
+        Post post2 = Post.builder()
+                .title("title2")
+                .content("google2")
+                .build();
+        postRepository.save(post2);
+
+        /**
+         * [{id:...,title:...},]리스트로 온다.
+         */
+        mockMvc.perform(get("/posts")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", Matchers.is(2)))
+                .andExpect(jsonPath("$.[0].id").value(post1.getId()))
+                .andExpect(jsonPath("$.[0].title").value("title1"))
+                .andExpect(jsonPath("$.[0].content").value("google1"))
+                .andDo(print());
+
+
+    }
+
+
+    
     @Test
     @DisplayName("글 1개 조회")
     void get_post() throws Exception {

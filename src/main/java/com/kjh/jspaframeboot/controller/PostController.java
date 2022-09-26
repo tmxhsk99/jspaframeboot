@@ -21,6 +21,11 @@ import java.util.Map;
 public class PostController {
     private final PostService postService;
 
+    @GetMapping("/posts")
+    public List<PostResponse> getList() {
+        return postService.getList();
+    }
+
 
     /**
      *  /posts -> 글 전체 조회 (검색 + 페이징)
@@ -52,11 +57,6 @@ public class PostController {
         return PostCreateDto.builder().id(postId).build();
     }
 
-    //Sample Get Route
-    @GetMapping("/posts")
-    public String get() {
-        return "Hello world";
-    }
 
     // Http Method
     // GET , POST , PATCH , DELETE , OPTIONS, HEAD ,PUT , TRACE, CONNECT
