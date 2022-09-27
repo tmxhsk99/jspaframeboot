@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -38,26 +40,30 @@ class PostServiceTest {
     @DisplayName("글 여러개 조회")
     void get_postList() throws Exception {
         //given
-        Post post = Post.builder()
-                .title("goo1")
-                .content("gle1")
-                .build();
-        postRepository.save(post);
+        List<Post> requestPosts = IntStream.range(0, 30)
+                .mapToObj(i -> {
+                    return Post.builder()
+                            .title("kjh 제목" + i)
+                            .content("content" + i)
+                            .build();
+                })
+                .collect(Collectors.toList());
 
-        Post post2 = Post.builder()
-                .title("goo2")
-                .content("gle2")
-                .build();
-        postRepository.save(post2);
+        postRepository.saveAll(requestPosts);
+
+        // sql -> select, limit , offset
 
         //when
-        List<PostResponse> posts = postService.getList();
+        List<PostResponse> posts = postService.getList(0);
 
         //then
-        assertThat(2L).isEqualTo(posts.size());
+        assertThat(posts.size()).isEqualTo(5L);
+        assertThat(posts.get(0).getTitle()).isEqualTo("kjh 제목1");
+        assertThat(posts.get(0).getContent()).isEqualTo("content1");
 
 
     }
+
     @Test
     @DisplayName("글 1개 조회")
     void read_one_post() {
