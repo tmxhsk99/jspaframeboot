@@ -9,12 +9,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.data.domain.Sort.Direction.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,7 +45,7 @@ class PostServiceTest {
     @DisplayName("글 여러개 조회")
     void get_postList() throws Exception {
         //given
-        List<Post> requestPosts = IntStream.range(0, 30)
+        List<Post> requestPosts = IntStream.range(1, 31)
                 .mapToObj(i -> {
                     return Post.builder()
                             .title("kjh 제목" + i)
@@ -51,15 +56,15 @@ class PostServiceTest {
 
         postRepository.saveAll(requestPosts);
 
-        // sql -> select, limit , offset
+        Pageable pageable = PageRequest.of(0, 5, Sort.by(DESC, "id"));
 
         //when
-        List<PostResponse> posts = postService.getList(0);
+        List<PostResponse> posts = postService.getList(pageable);
 
         //then
         assertThat(posts.size()).isEqualTo(5L);
-        assertThat(posts.get(0).getTitle()).isEqualTo("kjh 제목1");
-        assertThat(posts.get(0).getContent()).isEqualTo("content1");
+        assertThat(posts.get(0).getTitle()).isEqualTo("kjh 제목30");
+        assertThat(posts.get(4).getContent()).isEqualTo("content26");
 
 
     }

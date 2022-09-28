@@ -14,9 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import java.util.List;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -41,31 +45,31 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 여러개 조회")
+    @DisplayName("글 1페이지 조회")
     void get_postList() throws Exception {
         //given
-        Post post1 = Post.builder()
-                .title("title1")
-                .content("google1")
-                .build();
-        postRepository.save(post1);
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> {
+                    return Post.builder()
+                            .title("kjh 제목" + i)
+                            .content("content" + i)
+                            .build();
+                })
+                .collect(Collectors.toList());
 
-        Post post2 = Post.builder()
-                .title("title2")
-                .content("google2")
-                .build();
-        postRepository.save(post2);
+        postRepository.saveAll(requestPosts);
 
         /**
-         * [{id:...,title:...},]리스트로 온다.
+         * expected
          */
-        mockMvc.perform(get("/posts")
+        //mockMvc.perform(get("/posts?page=1&sort=id,desc&size=5") //pagable 생성시 , 파라미터로 size를 넘길수도 있지만 application.yml에 기본설정을 지성할 수 도 있다.
+        mockMvc.perform(get("/posts?page=1&sort=id,desc")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", Matchers.is(2)))
-                .andExpect(jsonPath("$.[0].id").value(post1.getId()))
-                .andExpect(jsonPath("$.[0].title").value("title1"))
-                .andExpect(jsonPath("$.[0].content").value("google1"))
+                .andExpect(jsonPath("$.length()", is(5)))
+                .andExpect(jsonPath("$.[0].id", is(30)))
+                .andExpect(jsonPath("$.[0].title", is("kjh 제목30")))
+                .andExpect(jsonPath("$.[0].content", is("content30")))
                 .andDo(print());
 
 
