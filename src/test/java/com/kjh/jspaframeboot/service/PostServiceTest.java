@@ -3,6 +3,7 @@ package com.kjh.jspaframeboot.service;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.request.PostEditDto;
 import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +42,62 @@ class PostServiceTest {
         postRepository.deleteAll();
     }
 
+    @Test
+    @DisplayName("글 내용 수정")
+    void postEdit2() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("kjh")
+                .content("content")
+                .build();
+
+
+        postRepository.save(post);
+
+        PostEditDto postEditDto = PostEditDto.builder()
+                .title("수정 테스트 제목")
+                .content("content2")
+                .build();
+
+        //when
+        postService.edit(post.getId(), postEditDto);
+
+        //then
+        Post findPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+        assertThat(findPost.getTitle()).isEqualTo("수정 테스트 제목");
+        assertThat(findPost.getContent()).isEqualTo("content2");
+
+
+    }
+
+
+    @Test
+    @DisplayName("글 제목 수정")
+    void postEdit() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("kjh")
+                .content("content")
+                .build();
+
+
+        postRepository.save(post);
+
+        PostEditDto postEditDto = PostEditDto.builder()
+                .title("수정 테스트 제목")
+                .build();
+
+        //when
+        postService.edit(post.getId(), postEditDto);
+
+        //then
+        Post findPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+        assertThat(findPost.getTitle()).isEqualTo("수정 테스트 제목");
+
+
+    }
 
     @Test
     @DisplayName("글 여러개 조회")

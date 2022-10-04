@@ -19,9 +19,28 @@ public class Post {
 
     @Lob    //DB 저장시에는 LongText
     private String content;
+
     @Builder
     public Post(String title, String content) {
         this.title = title;
         this.content = content;
     }
+
+    /*
+        public void change(String title ,String content){
+            this.title = title;
+            this.content = content;
+        }*/
+    public PostEditor.PostEditorBuilder toEditor() {
+        return PostEditor.builder()
+                .title(this.title)
+                .content(this.content)
+                ;
+    }
+
+    public void edit(PostEditor postEditor) {
+        this.title = postEditor.getTitle();
+        this.content = postEditor.getContent();
+    }
+
 }

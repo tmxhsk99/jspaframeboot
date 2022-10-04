@@ -1,17 +1,17 @@
 package com.kjh.jspaframeboot.service;
 
+import com.kjh.jspaframeboot.domain.PostEditor;
 import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.request.PostEditDto;
 import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +21,27 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
 
+    @Transactional //Transactional이 있어야 업데이트가 된다...
+    public void edit(Long id , PostEditDto postEditDto){
 
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException());
+
+        //post.change(postEditDto.getTitle(), postEditDto.getContent());
+        //builder 자체를 넘긴다.
+        PostEditor.PostEditorBuilder editorBuilder = post.toEditor();
+
+        //검증을 해야된다..
+        //1. if문으로 있는지업는지 검사해서 타게한다.
+        //2. 그냥 넘길때 기존업데이트 안되는 정보를 넘기게한다 (요걸 선호)
+        PostEditor postEditor = editorBuilder
+                .title(postEditDto.getTitle())
+                .content(postEditDto.getContent())
+                .build();
+
+        post.edit(postEditor);
+
+    }
 
     public Long write(PostCreateDto postCreateDto){
         // postCreate -> Entity
