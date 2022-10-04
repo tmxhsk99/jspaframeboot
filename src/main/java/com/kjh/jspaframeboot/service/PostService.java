@@ -1,8 +1,9 @@
 package com.kjh.jspaframeboot.service;
 
-import com.kjh.jspaframeboot.controller.repository.PostRepository;
+import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class PostService {
 
     public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(() ->  new IllegalArgumentException("존재하지 않는 글입니다."));
 
         PostResponse response = PostResponse.builder()
                 .id(post.getId())
@@ -55,10 +56,10 @@ public class PostService {
     // 글이 -> 1억개 -> DB가 뻗음
     // DB -> 애플리케이션 서버를 전달하는 시간  , 트래픽 비용등이 많이 발생할 수 있다.
     // 그러므로 전체 페이지에서 해당 원하는 페이지 값 리턴하도록 변경
-    public List<PostResponse> getList(Pageable pageable) {
-        // web 에서 1로 날라오면 0으로 바꿔줌 (수동은 안먹힘)  one-indexed-parameters: true
-       // Pageable pageable = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC,"id"));
-        return postRepository.findAll(pageable).stream()
+    public List<PostResponse> getList(PostSearch postSearch) {
+
+
+        return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
     }

@@ -2,6 +2,7 @@ package com.kjh.jspaframeboot.controller;
 
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
 import com.kjh.jspaframeboot.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -24,23 +25,26 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(Pageable pagable) {
-        return postService.getList(pagable);
+    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
+
+        return postService.getList(postSearch);
+
     }
 
 
     /**
-     *  /posts -> 글 전체 조회 (검색 + 페이징)
-     *  /post/(postId) -> 글 단건 조회
+     * /posts -> 글 전체 조회 (검색 + 페이징)
+     * /post/(postId) -> 글 단건 조회
      */
     @GetMapping("/posts/{postId}")
-    public PostResponse get(@PathVariable(name = "postId") Long id){
+    public PostResponse get(@PathVariable(name = "postId") Long id) {
         PostResponse postResponse = postService.get(id);
         return postResponse;
     }
 
     /**
      * 단건 post 저장
+     *
      * @param request
      * @return
      * @throws Exception
@@ -77,8 +81,8 @@ public class PostController {
      * 위와 동일하지만 매개변수를 Map 으로 받는 경우
      */
     @PostMapping("/posts_pramMap")
-    public String posts_pramMap(@RequestParam Map<String,String> params) {
-        log.info("params={}",params);
+    public String posts_pramMap(@RequestParam Map<String, String> params) {
+        log.info("params={}", params);
         return "Hello world";
     }
 
@@ -87,7 +91,7 @@ public class PostController {
      */
     @PostMapping("/posts_recv_object")
     public String posts_recv_object(PostCreateDto postCreateDto) {
-        log.info("params={}",postCreateDto.toString());
+        log.info("params={}", postCreateDto.toString());
         return "Hello world";
     }
 // 데이터를 검증하는 이유
@@ -98,14 +102,14 @@ public class PostController {
     // 4. DB에 값을 저장할 때 의도치 않은 오류 가 발생 할 수 있다.
     // 5. 서버 개발자의 편안 함을 위해서
     @PostMapping("/posts_json")
-    public Map<String,String> posts_json(@RequestBody @Valid PostCreateDto params, BindingResult result) throws Exception {
-        if(result.hasErrors()){
+    public Map<String, String> posts_json(@RequestBody @Valid PostCreateDto params, BindingResult result) throws Exception {
+        if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
-            Map<String,String> errorMap = new HashMap<>();
+            Map<String, String> errorMap = new HashMap<>();
             for (FieldError fieldError : fieldErrors) {
                 String fieldName = fieldError.getField(); //에러발생 필드의 들어온값
                 String errorMessage = fieldError.getDefaultMessage();//...에러메시지
-                errorMap.put(fieldName,errorMessage); //에러를 Map에 넣어 둔다.
+                errorMap.put(fieldName, errorMessage); //에러를 Map에 넣어 둔다.
             }
             return errorMap;
         }
@@ -127,7 +131,7 @@ public class PostController {
 //        }
 
     @PostMapping("/posts_use_controller_advice")
-    public Map<String,String> posts_use_controller_advice(@RequestBody @Valid PostCreateDto params) throws Exception {
+    public Map<String, String> posts_use_controller_advice(@RequestBody @Valid PostCreateDto params) throws Exception {
 
         return new HashMap<>();
     }

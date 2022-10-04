@@ -2,7 +2,7 @@ package com.kjh.jspaframeboot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
-import com.kjh.jspaframeboot.controller.repository.PostRepository;
+import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,10 +45,10 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 1페이지 조회")
+    @DisplayName("페이지를 0으로 요청하면 첫 페이지를 가져온다.")
     void get_postList() throws Exception {
         //given
-        List<Post> requestPosts = IntStream.range(1, 31)
+        List<Post> requestPosts = IntStream.range(0, 20)
                 .mapToObj(i -> {
                     return Post.builder()
                             .title("kjh 제목" + i)
@@ -63,13 +63,13 @@ class PostControllerTest {
          * expected
          */
         //mockMvc.perform(get("/posts?page=1&sort=id,desc&size=5") //pagable 생성시 , 파라미터로 size를 넘길수도 있지만 application.yml에 기본설정을 지성할 수 도 있다.
-        mockMvc.perform(get("/posts?page=1&sort=id,desc")
+        mockMvc.perform(get("/posts?page=0&size=10")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(5)))
-                .andExpect(jsonPath("$.[0].id", is(30)))
-                .andExpect(jsonPath("$.[0].title", is("kjh 제목30")))
-                .andExpect(jsonPath("$.[0].content", is("content30")))
+                .andExpect(jsonPath("$.length()", is(10)))
+                .andExpect(jsonPath("$.[0].id", is(20)))
+                .andExpect(jsonPath("$.[0].title", is("kjh 제목19")))
+                .andExpect(jsonPath("$.[0].content", is("content19")))
                 .andDo(print());
 
 

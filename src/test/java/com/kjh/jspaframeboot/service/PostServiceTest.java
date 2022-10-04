@@ -1,8 +1,9 @@
 package com.kjh.jspaframeboot.service;
 
 import com.kjh.jspaframeboot.domain.Post;
-import com.kjh.jspaframeboot.controller.repository.PostRepository;
+import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +46,7 @@ class PostServiceTest {
     @DisplayName("글 여러개 조회")
     void get_postList() throws Exception {
         //given
-        List<Post> requestPosts = IntStream.range(1, 31)
+        List<Post> requestPosts = IntStream.range(0, 20)
                 .mapToObj(i -> {
                     return Post.builder()
                             .title("kjh 제목" + i)
@@ -56,15 +57,16 @@ class PostServiceTest {
 
         postRepository.saveAll(requestPosts);
 
-        Pageable pageable = PageRequest.of(0, 5, Sort.by(DESC, "id"));
+        PostSearch postSearch = PostSearch.builder()
+                .page(1)
+                .build();
 
         //when
-        List<PostResponse> posts = postService.getList(pageable);
+        List<PostResponse> posts = postService.getList(postSearch);
 
         //then
-        assertThat(posts.size()).isEqualTo(5L);
-        assertThat(posts.get(0).getTitle()).isEqualTo("kjh 제목30");
-        assertThat(posts.get(4).getContent()).isEqualTo("content26");
+        assertThat(posts.size()).isEqualTo(10L);
+        assertThat(posts.get(0).getTitle()).isEqualTo("kjh 제목19");
 
 
     }

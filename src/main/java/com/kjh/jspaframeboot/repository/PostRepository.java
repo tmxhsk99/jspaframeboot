@@ -1,4 +1,8 @@
 package com.kjh.jspaframeboot.repository;
 
-public interface PostRepository {
+import com.kjh.jspaframeboot.domain.Post;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PostRepository extends JpaRepository<Post,Long>,PostRepositoryCustom {
+
 }
