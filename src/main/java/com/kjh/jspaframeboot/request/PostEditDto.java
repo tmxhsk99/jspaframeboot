@@ -2,6 +2,7 @@ package com.kjh.jspaframeboot.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
@@ -19,7 +20,9 @@ public class PostEditDto {
     @NotBlank(message = "내용를 입력해주세요")
     private String content;
 
-    @Builder
+    public PostEditDto() {
+    }
+
     public PostEditDto(Long id, String title, String content) {
         this.id = id;
         this.title = title;

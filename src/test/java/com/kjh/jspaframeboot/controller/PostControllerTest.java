@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.request.PostEditDto;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +43,33 @@ class PostControllerTest {
     @BeforeEach
     void clean() {
         postRepository.deleteAll();
+    }
+    @Test
+    @DisplayName("글 제목 수정")
+    void postEdit() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("kjh")
+                .content("content")
+                .build();
+
+        postRepository.save(post);
+
+
+        PostEditDto postEdit = PostEditDto.builder()
+                .title("김주현")
+                .content("content")
+                .build();
+
+        /**
+         * expected
+         */
+        mockMvc.perform(patch("/posts/{postId}",post.getId()) // PATCH /post/{postId}
+                        .contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.kjh.jspaframeboot.controller;
 
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.request.PostEditDto;
 import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
 import com.kjh.jspaframeboot.service.PostService;
@@ -24,13 +25,22 @@ import java.util.Map;
 public class PostController {
     private final PostService postService;
 
+
+    @PatchMapping("/posts/{postId}")
+    public PostResponse edit(@PathVariable long postId, @RequestBody @Valid PostEditDto request){
+        return postService.edit(postId, request);
+    }
+    /**
+     *
+     * @param postSearch
+     * @return
+     */
     @GetMapping("/posts")
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
 
         return postService.getList(postSearch);
 
     }
-
 
     /**
      * /posts -> 글 전체 조회 (검색 + 페이징)

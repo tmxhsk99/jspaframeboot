@@ -41,9 +41,35 @@ class PostServiceTest {
     void setting() {
         postRepository.deleteAll();
     }
+    @Test
+    @DisplayName("글 내용 수정 테스트")
+    void postEdit3() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("kjh")
+                .content("content")
+                .build();
+
+
+        postRepository.save(post);
+
+        PostEditDto postEditDto = PostEditDto.builder()
+                .title("kjh")
+                .content("content2")
+                .build();
+
+        //when
+        postService.edit(post.getId(), postEditDto);
+
+        //then
+        Post findPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
+        assertThat(findPost.getContent()).isEqualTo("content2");
+
+    }
 
     @Test
-    @DisplayName("글 내용 수정")
+    @DisplayName("글 수정 테스트")
     void postEdit2() throws Exception {
         //given
         Post post = Post.builder()
@@ -67,7 +93,6 @@ class PostServiceTest {
                 .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. id=" + post.getId()));
         assertThat(findPost.getTitle()).isEqualTo("수정 테스트 제목");
         assertThat(findPost.getContent()).isEqualTo("content2");
-
 
     }
 

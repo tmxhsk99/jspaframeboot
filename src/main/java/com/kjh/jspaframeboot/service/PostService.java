@@ -22,7 +22,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional //Transactional이 있어야 업데이트가 된다...
-    public void edit(Long id , PostEditDto postEditDto){
+    public PostResponse edit(Long id , PostEditDto postEditDto){
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException());
@@ -41,6 +41,7 @@ public class PostService {
 
         post.edit(postEditor);
 
+        return new PostResponse(post);
     }
 
     public Long write(PostCreateDto postCreateDto){
