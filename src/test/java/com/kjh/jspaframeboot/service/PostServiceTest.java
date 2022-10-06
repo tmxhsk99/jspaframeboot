@@ -41,6 +41,26 @@ class PostServiceTest {
     void setting() {
         postRepository.deleteAll();
     }
+
+
+    @Test
+    @DisplayName("글 삭제 테스트 ")
+    public void deletePosts() {
+        //given
+        Post post = Post.builder()
+                .title("kjh")
+                .content("content")
+                .build();
+
+
+        postRepository.save(post);
+
+        //when
+        postService.delete(post.getId());
+
+        //then
+        assertThat(postRepository.count()).isEqualTo(0);
+    }
     @Test
     @DisplayName("글 내용 수정 테스트")
     void postEdit3() throws Exception {

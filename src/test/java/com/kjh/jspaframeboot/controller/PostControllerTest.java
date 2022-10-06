@@ -44,6 +44,27 @@ class PostControllerTest {
     void clean() {
         postRepository.deleteAll();
     }
+
+    @Test
+    @DisplayName("글 삭제 테스트")
+    void postDelete() throws Exception {
+        //given
+        Post post = Post.builder()
+                .title("kjh")
+                .content("content")
+                .build();
+
+        postRepository.save(post);
+
+        /**
+         * expected
+         */
+        mockMvc.perform(delete("/posts/{postId}",post.getId()) // PATCH /post/{postId}
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
     @Test
     @DisplayName("글 제목 수정")
     void postEdit() throws Exception {
