@@ -1,6 +1,7 @@
 package com.kjh.jspaframeboot.service;
 
 import com.kjh.jspaframeboot.domain.PostEditor;
+import com.kjh.jspaframeboot.exception.PostNotFound;
 import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.request.PostCreateDto;
@@ -25,7 +26,7 @@ public class PostService {
     public PostResponse edit(Long id , PostEditDto postEditDto){
 
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new PostNotFound());
 
         //post.change(postEditDto.getTitle(), postEditDto.getContent());
         //builder 자체를 넘긴다.
@@ -56,7 +57,7 @@ public class PostService {
 
     public PostResponse get(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() ->  new IllegalArgumentException("존재하지 않는 글입니다."));
+                .orElseThrow(() ->  new PostNotFound());
 
         PostResponse response = PostResponse.builder()
                 .id(post.getId())
@@ -87,7 +88,7 @@ public class PostService {
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 값 입니다."));
+                .orElseThrow(() -> new PostNotFound());
 
         // -> 존재하는 경우
         postRepository.delete(post);

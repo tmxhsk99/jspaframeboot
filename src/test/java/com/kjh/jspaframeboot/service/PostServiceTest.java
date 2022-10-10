@@ -1,11 +1,14 @@
 package com.kjh.jspaframeboot.service;
 
 import com.kjh.jspaframeboot.domain.Post;
+import com.kjh.jspaframeboot.exception.PostNotFound;
 import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.request.PostCreateDto;
 import com.kjh.jspaframeboot.request.PostEditDto;
 import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,6 +63,24 @@ class PostServiceTest {
 
         //then
         assertThat(postRepository.count()).isEqualTo(0);
+    }
+    @Test
+    @DisplayName("글 삭제 실패 테스트 - PostNotFound()")
+    void deletePosts_Exception() {
+        //given
+        Post post = Post.builder()
+                .title("kjh")
+                .content("gle")
+                .build();
+        postRepository.save(post);
+
+
+        //expected
+        PostNotFound e = Assertions.assertThrows(PostNotFound.class, () -> {
+            postService.delete(post.getId() + 1L);
+        });
+
+        assertThat(e.getMessage()).isEqualTo("존재하지 않는 글입니다.");
     }
     @Test
     @DisplayName("글 내용 수정 테스트")
@@ -190,6 +211,25 @@ class PostServiceTest {
         assertThat(returnPost).isNotNull();
         assertThat(returnPost.getTitle()).isEqualTo("1234567890");
         assertThat(returnPost.getContent()).isEqualTo("gle");
+    }
+
+    @Test
+    @DisplayName("글 1개 조회 실패 테스트 - PostNotFound()")
+    void read_one_post_Exception() {
+        //given
+        Post post = Post.builder()
+                .title("kjh")
+                .content("gle")
+                .build();
+        postRepository.save(post);
+
+
+        //expected
+        PostNotFound e = Assertions.assertThrows(PostNotFound.class, () -> {
+            postService.get(post.getId() + 1L);
+        });
+
+        assertThat(e.getMessage()).isEqualTo("존재하지 않는 글입니다.");
     }
 
     @Test
