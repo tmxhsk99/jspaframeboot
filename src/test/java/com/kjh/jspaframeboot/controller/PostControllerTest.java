@@ -45,6 +45,27 @@ class PostControllerTest {
         postRepository.deleteAll();
     }
 
+
+    @Test
+    @DisplayName("글 작성시 제목에 '바보'는 포함 될 수 없다. ")
+    public void ExceptionTest() throws Exception {
+        //given
+        PostCreateDto request = PostCreateDto.builder()
+                .title("kjh 바보")
+                .content("content")
+                .build();
+
+        String json = objectMapper.writeValueAsString(request);
+
+        //when
+        mockMvc.perform(post("/posts/save")
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+    }
+
     @Test
     @DisplayName("글 삭제 테스트")
     void postDelete() throws Exception {

@@ -1,5 +1,7 @@
 package com.kjh.jspaframeboot.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.exception.PostNotFound;
 import com.kjh.jspaframeboot.repository.PostRepository;
