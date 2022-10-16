@@ -182,7 +182,7 @@ class PostControllerTest {
         String jsonString = objectMapper.writeValueAsString(request);
 
         // when
-        mockMvc.perform(post("/poWsts/save")
+        mockMvc.perform(post("/posts/save")
                         .contentType(APPLICATION_JSON)
                         .content(jsonString)
                 )
@@ -329,4 +329,6 @@ class PostControllerTest {
                 .andExpect(content().string("Hello world"))
                 .andDo(print());
     }
+
+
 }
