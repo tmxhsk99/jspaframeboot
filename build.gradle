@@ -1,14 +1,20 @@
 buildscript {
 	ext {
 		queryDslVersion = "5.0.0"
+		asciidocVersion = "2.0.6.RELEASE"
 	}
 }
 plugins {
+	id 'java'
+	id 'war'
 	id 'org.springframework.boot' version '2.7.3'
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
-	id 'java'
-	id 'war'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
+}
+
+ext{
+	snippetsDir = file('build/generated-snippets')
 }
 
 group = 'com.kjh'
@@ -19,6 +25,7 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	asciidoctorExt
 }
 
 repositories {
@@ -30,9 +37,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-
+	//queryDsl Lib
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+	//RES DOC Lib
+	asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:${asciidocVersion}"
+	testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${asciidocVersion}"
 
 
 	compileOnly 'org.projectlombok:lombok'
@@ -46,7 +57,34 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-// querydsl 세팅 시작
+
+//REST Docs setting start (https://docs.spring.io/spring-restdocs/docs/current/reference/html5/)
+test {
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	configurations 'asciidoctorExt'
+	dependsOn test
+}
+
+bootJar {
+	dependsOn asciidoctor
+
+	/*from ("${asciidoctor.outputDir}/html5") {
+		println ">>>>" + asciidoctor.outputDir
+		into 'static/docs'
+	}*/
+	// 생성된 html 파일을 복사한다.
+	copy {
+		from asciidoctor.outputDir
+		into "src/main/resources/static/docs"
+	}
+}
+//REST Docs setting end
+
+// querydsl setting start
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
 	jpa = true
@@ -61,3 +99,4 @@ configurations {
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
+// querydsl setting end

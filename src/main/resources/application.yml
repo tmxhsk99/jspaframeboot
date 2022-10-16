@@ -1,3 +1,7 @@
+server:
+  servlet:
+    encoding:
+      force-response: true
 spring:
   h2:
     console:
