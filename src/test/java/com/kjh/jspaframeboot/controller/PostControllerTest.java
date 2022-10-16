@@ -329,14 +329,4 @@ class PostControllerTest {
                 .andExpect(content().string("Hello world"))
                 .andDo(print());
     }
-
-    @Test
-    @DisplayName("/posts 요청시 helle world 를 출력한다")
-    void simpleGetTest() throws Exception {
-        //expected
-        mockMvc.perform(get("/posts"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Hello world"))
-                .andDo(print());
-    }
 }
