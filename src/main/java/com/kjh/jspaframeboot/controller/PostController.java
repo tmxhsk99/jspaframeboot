@@ -14,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +44,6 @@ public class PostController {
      */
     @GetMapping("/posts")
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
-
         return postService.getList(postSearch);
 
     }
@@ -90,6 +91,15 @@ public class PostController {
         return "Hello world";
     }
 
+    /**
+     * 쿠키 테스트를 위한 컨트롤러
+     * @param response
+     */
+    @PostMapping("/posts/cookie")
+    public void post_cookie(HttpServletResponse response){
+        Cookie cookie = new Cookie("controllerCookie","controllerCookie");
+        response.addCookie(cookie);
+    }
 
     /**
      * 위와 동일하지만 매개변수를 Map 으로 받는 경우

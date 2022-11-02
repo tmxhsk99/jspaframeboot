@@ -328,5 +328,14 @@ class PostControllerTest {
                 .andDo(print());
     }
 
-
+    @Test
+    @DisplayName("/posts/cookie 로 post 요청")
+    void cookieTest() throws Exception {
+        //expected
+        mockMvc.perform(post("/posts/cookie")
+                        .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 }
