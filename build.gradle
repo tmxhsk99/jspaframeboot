@@ -1,20 +1,20 @@
 buildscript {
-	ext {
-		queryDslVersion = "5.0.0"
-		asciidocVersion = "2.0.6.RELEASE"
-	}
+    ext {
+        queryDslVersion = "5.0.0"
+        asciidocVersion = "2.0.6.RELEASE"
+    }
 }
 plugins {
-	id 'java'
-	id 'war'
-	id 'org.springframework.boot' version '2.7.3'
-	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
-	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
-	id "org.asciidoctor.jvm.convert" version "3.3.2"
+    id 'java'
+    id 'war'
+    id 'org.springframework.boot' version '2.7.3'
+    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
-ext{
-	snippetsDir = file('build/generated-snippets')
+ext {
+    snippetsDir = file('build/generated-snippets')
 }
 
 group = 'com.kjh'
@@ -22,81 +22,88 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	asciidoctorExt
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    asciidoctorExt
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-	//queryDsl Lib
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+    //queryDsl Lib
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
-	//RES DOC Lib
-	asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:${asciidocVersion}"
-	testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${asciidocVersion}"
+    //RES DOC Lib
+    asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:${asciidocVersion}"
+    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${asciidocVersion}"
+    // https://mvnrepository.com/artifact/org.webjars.bower/jquery
+    implementation 'org.webjars.bower:jquery:3.6.1'
+    // https://mvnrepository.com/artifact/org.webjars/sockjs-client
+    implementation 'org.webjars:sockjs-client:1.5.1'
+    // https://mvnrepository.com/artifact/org.webjars/webjars-locator
+    implementation 'org.webjars:webjars-locator:0.46'
 
 
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
-	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
+    annotationProcessor 'org.projectlombok:lombok'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 //REST Docs setting start (https://docs.spring.io/spring-restdocs/docs/current/reference/html5/)
 test {
-	outputs.dir snippetsDir
+    outputs.dir snippetsDir
 }
 
 asciidoctor {
-	inputs.dir snippetsDir
-	configurations 'asciidoctorExt'
-	dependsOn test
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    dependsOn test
 }
 
 bootJar {
-	dependsOn asciidoctor
+    dependsOn asciidoctor
 
-	/*from ("${asciidoctor.outputDir}/html5") {
-		println ">>>>" + asciidoctor.outputDir
-		into 'static/docs'
-	}*/
-	// 생성된 html 파일을 복사한다.
-	copy {
-		from asciidoctor.outputDir
-		into "src/main/resources/static/docs"
-	}
+    /*from ("${asciidoctor.outputDir}/html5") {
+        println ">>>>" + asciidoctor.outputDir
+        into 'static/docs'
+    }*/
+    // 생성된 html 파일을 복사한다.
+    copy {
+        from asciidoctor.outputDir
+        into "src/main/resources/static/docs"
+    }
 }
 //REST Docs setting end
 
 // querydsl setting start
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
+    jpa = true
+    querydslSourcesDir = querydslDir
 }
 sourceSets {
-	main.java.srcDir querydslDir
+    main.java.srcDir querydslDir
 }
 configurations {
-	querydsl.extendsFrom compileClasspath
+    querydsl.extendsFrom compileClasspath
 }
 compileQuerydsl {
-	options.annotationProcessorPath = configurations.querydsl
+    options.annotationProcessorPath = configurations.querydsl
 }
 // querydsl setting end
