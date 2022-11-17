@@ -42,6 +42,10 @@ dependencies {
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
+    //JSP setting
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    implementation 'javax.servlet:jstl'
+
     //RES DOC Lib
     asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:${asciidocVersion}"
     testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:${asciidocVersion}"

@@ -3,6 +3,11 @@ server:
     encoding:
       force-response: true
 spring:
+  #JSP 경로 설정
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
   h2:
     console:
       enabled: true
@@ -13,9 +18,16 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-
-#  data:
-#    web:
-#      pageable:
-#        one-indexed-parameters: true
-#        default-page-size: 5
+  #JPA 설정
+  jpa:
+    hibernate:
+      #create : 테이블 다시 지우고 생성 , update : 기존 에서 변경된 부분만 적용, validate : 정상 매핑되어있는지 만 확인 ( 주의 : 운영시에는 validate 만 사용해야 한다. )
+      ddl-auto: update
+    properties:
+        hibernate:
+          #사용된 sql 확인 설정 (운영적용시 주석처리)
+          #show_sql: true
+          format_sql: true
+          #default_batch_fetch_size: 1000
+logging.level:
+  org.hibernate.SQL: debug
