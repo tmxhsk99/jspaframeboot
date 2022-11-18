@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @ToString
-public class PostCreateDto {
+public class PostCreate {
 
     @NotBlank(message = "타이틀을 입력해주세요.")
     private String title;
@@ -18,7 +18,7 @@ public class PostCreateDto {
     private String content;
 
     @Builder
-    public PostCreateDto(String title, String content) {
+    public PostCreate(String title, String content) {
         this.title = title;
         this.content = content;
     }

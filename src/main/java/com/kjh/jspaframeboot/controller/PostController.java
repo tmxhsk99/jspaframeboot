@@ -1,15 +1,12 @@
 package com.kjh.jspaframeboot.controller;
 
-import com.kjh.jspaframeboot.domain.Post;
-import com.kjh.jspaframeboot.request.PostCreateDto;
-import com.kjh.jspaframeboot.request.PostEditDto;
+import com.kjh.jspaframeboot.request.PostCreate;
+import com.kjh.jspaframeboot.request.PostEdit;
 import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
 import com.kjh.jspaframeboot.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +31,7 @@ public class PostController {
     }
 
     @PatchMapping("/posts/{postId}")
-    public PostResponse edit(@PathVariable long postId, @RequestBody @Valid PostEditDto request){
+    public PostResponse edit(@PathVariable long postId, @RequestBody @Valid PostEdit request){
         return postService.edit(postId, request);
     }
     /**
@@ -66,7 +63,7 @@ public class PostController {
      * @throws Exception
      */
     @PostMapping("/posts/save")
-    public void posts_save(@RequestBody @Valid PostCreateDto request) throws Exception {
+    public void posts_save(@RequestBody @Valid PostCreate request) throws Exception {
         // Case1. 저장한 데이터 Entity ->response로 응답하기
         // Case2. 저장한 데이터 의 primary_id -> response로 응답하기
         //      Client 에서는 수신한 id를 글 조회 API를 통해서 데이터르 수신 받음
@@ -114,8 +111,8 @@ public class PostController {
      * 위와 동일하지만 해당 값에대한 클래스를 만들어 받는 경우
      */
     @PostMapping("/posts_recv_object")
-    public String posts_recv_object(PostCreateDto postCreateDto) {
-        log.info("params={}", postCreateDto.toString());
+    public String posts_recv_object(PostCreate postCreate) {
+        log.info("params={}", postCreate.toString());
         return "Hello world";
     }
 // 데이터를 검증하는 이유
@@ -126,7 +123,7 @@ public class PostController {
     // 4. DB에 값을 저장할 때 의도치 않은 오류 가 발생 할 수 있다.
     // 5. 서버 개발자의 편안 함을 위해서
     @PostMapping("/posts_json")
-    public Map<String, String> posts_json(@RequestBody @Valid PostCreateDto params, BindingResult result) throws Exception {
+    public Map<String, String> posts_json(@RequestBody @Valid PostCreate params, BindingResult result) throws Exception {
         if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
             Map<String, String> errorMap = new HashMap<>();
@@ -155,7 +152,7 @@ public class PostController {
 //        }
 
     @PostMapping("/posts_use_controller_advice")
-    public Map<String, String> posts_use_controller_advice(@RequestBody @Valid PostCreateDto params) throws Exception {
+    public Map<String, String> posts_use_controller_advice(@RequestBody @Valid PostCreate params) throws Exception {
 
         return new HashMap<>();
     }

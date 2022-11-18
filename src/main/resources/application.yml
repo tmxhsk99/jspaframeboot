@@ -2,7 +2,6 @@ server:
   servlet:
     encoding:
       force-response: true
-spring:
   #JSP 경로 설정
   mvc:
     view:

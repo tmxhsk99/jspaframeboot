@@ -3,7 +3,7 @@ package com.kjh.jspaframeboot.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.repository.PostRepository;
-import com.kjh.jspaframeboot.request.PostCreateDto;
+import com.kjh.jspaframeboot.request.PostCreate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.http.MediaType.*;
@@ -70,7 +69,7 @@ public class PostControllerDocTest {
     @DisplayName("글 등록 테스트")
     void RestDocsTest_post_save() throws Exception {
         //given
-        PostCreateDto request = PostCreateDto.builder()
+        PostCreate request = PostCreate.builder()
                 .title("글제목")
                 .content("content")
                 .build();

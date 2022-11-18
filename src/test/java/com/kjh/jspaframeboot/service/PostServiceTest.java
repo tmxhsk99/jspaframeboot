@@ -1,37 +1,27 @@
 package com.kjh.jspaframeboot.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.exception.PostNotFound;
 import com.kjh.jspaframeboot.repository.PostRepository;
-import com.kjh.jspaframeboot.request.PostCreateDto;
-import com.kjh.jspaframeboot.request.PostEditDto;
+import com.kjh.jspaframeboot.request.PostCreate;
+import com.kjh.jspaframeboot.request.PostEdit;
 import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.data.domain.Sort.Direction.*;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 class PostServiceTest {
@@ -96,13 +86,13 @@ class PostServiceTest {
 
         postRepository.save(post);
 
-        PostEditDto postEditDto = PostEditDto.builder()
+        PostEdit postEdit = PostEdit.builder()
                 .title("kjh")
                 .content("content2")
                 .build();
 
         //when
-        postService.edit(post.getId(), postEditDto);
+        postService.edit(post.getId(), postEdit);
 
         //then
         Post findPost = postRepository.findById(post.getId())
@@ -123,13 +113,13 @@ class PostServiceTest {
 
         postRepository.save(post);
 
-        PostEditDto postEditDto = PostEditDto.builder()
+        PostEdit postEdit = PostEdit.builder()
                 .title("수정 테스트 제목")
                 .content("content2")
                 .build();
 
         //when
-        postService.edit(post.getId(), postEditDto);
+        postService.edit(post.getId(), postEdit);
 
         //then
         Post findPost = postRepository.findById(post.getId())
@@ -152,12 +142,12 @@ class PostServiceTest {
 
         postRepository.save(post);
 
-        PostEditDto postEditDto = PostEditDto.builder()
+        PostEdit postEdit = PostEdit.builder()
                 .title("수정 테스트 제목")
                 .build();
 
         //when
-        postService.edit(post.getId(), postEditDto);
+        postService.edit(post.getId(), postEdit);
 
         //then
         Post findPost = postRepository.findById(post.getId())
@@ -238,7 +228,7 @@ class PostServiceTest {
     @DisplayName("PostService 글 작성 테스트")
     void post_save_test() {
         //given
-        PostCreateDto post = PostCreateDto.builder()
+        PostCreate post = PostCreate.builder()
                 .title("제목입니다.")
                 .content("내용입니다.")
                 .build();

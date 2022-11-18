@@ -3,9 +3,8 @@ package com.kjh.jspaframeboot.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kjh.jspaframeboot.domain.Post;
 import com.kjh.jspaframeboot.repository.PostRepository;
-import com.kjh.jspaframeboot.request.PostCreateDto;
-import com.kjh.jspaframeboot.request.PostEditDto;
-import org.hamcrest.Matchers;
+import com.kjh.jspaframeboot.request.PostCreate;
+import com.kjh.jspaframeboot.request.PostEdit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -50,7 +48,7 @@ class PostControllerTest {
     @DisplayName("글 작성시 제목에 '바보'는 포함 될 수 없다. ")
     public void ExceptionTest() throws Exception {
         //given
-        PostCreateDto request = PostCreateDto.builder()
+        PostCreate request = PostCreate.builder()
                 .title("kjh 바보")
                 .content("content")
                 .build();
@@ -98,7 +96,7 @@ class PostControllerTest {
         postRepository.save(post);
 
 
-        PostEditDto postEdit = PostEditDto.builder()
+        PostEdit postEdit = PostEdit.builder()
                 .title("김주현")
                 .content("content")
                 .build();
@@ -171,7 +169,7 @@ class PostControllerTest {
     @DisplayName("/posts 요청시 DB에 값이 저장된다.")
     void sendJson_db_save() throws Exception {
         //given
-        PostCreateDto request = PostCreateDto
+        PostCreate request = PostCreate
                                 .builder()
                                 .title("제목입니다.")
                                 .content("내용입니다.")
@@ -201,7 +199,7 @@ class PostControllerTest {
     @DisplayName("/posts 요청시 ControllerAdvice. 에러 확인 테스트")
     void sendJson_use_controller_advice() throws Exception {
 
-        PostCreateDto request = PostCreateDto
+        PostCreate request = PostCreate
                 .builder()
                 .content("내용입니다.")
                 .build();
@@ -223,7 +221,7 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 title 값은 필수다.")
     void sendJson_required_title() throws Exception {
-        PostCreateDto request = PostCreateDto
+        PostCreate request = PostCreate
                 .builder()
                 .content("내용입니다.")
                 .build();
@@ -253,7 +251,7 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts_json 로 post 요청 contentType = APPLICATION_JSON , content에 실제 내용 설정")
     void sendJson() throws Exception {
-        PostCreateDto request = PostCreateDto
+        PostCreate request = PostCreate
                 .builder()
                 .title("제목입니다.")
                 .content("내용입니다.")

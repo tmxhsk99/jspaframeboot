@@ -4,8 +4,8 @@ import com.kjh.jspaframeboot.domain.PostEditor;
 import com.kjh.jspaframeboot.exception.PostNotFound;
 import com.kjh.jspaframeboot.repository.PostRepository;
 import com.kjh.jspaframeboot.domain.Post;
-import com.kjh.jspaframeboot.request.PostCreateDto;
-import com.kjh.jspaframeboot.request.PostEditDto;
+import com.kjh.jspaframeboot.request.PostCreate;
+import com.kjh.jspaframeboot.request.PostEdit;
 import com.kjh.jspaframeboot.request.PostSearch;
 import com.kjh.jspaframeboot.response.PostResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional //Transactional이 있어야 업데이트가 된다...
-    public PostResponse edit(Long id , PostEditDto postEditDto){
+    public PostResponse edit(Long id , PostEdit postEdit){
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFound());
@@ -36,8 +36,8 @@ public class PostService {
         //1. if문으로 있는지업는지 검사해서 타게한다.
         //2. 그냥 넘길때 기존업데이트 안되는 정보를 넘기게한다 (요걸 선호)
         PostEditor postEditor = editorBuilder
-                .title(postEditDto.getTitle())
-                .content(postEditDto.getContent())
+                .title(postEdit.getTitle())
+                .content(postEdit.getContent())
                 .build();
 
         post.edit(postEditor);
@@ -45,11 +45,11 @@ public class PostService {
         return new PostResponse(post);
     }
 
-    public Long write(PostCreateDto postCreateDto){
+    public Long write(PostCreate postCreate){
         // postCreate -> Entity
         Post post = Post.builder()
-                .title(postCreateDto.getTitle())
-                .content(postCreateDto.getContent())
+                .title(postCreate.getTitle())
+                .content(postCreate.getContent())
                 .build();
         //클라이언트 측에서 데이터관리가 잘 안될 경우는 다시 데이터를 돌려달라고 하는 경우 도있다...
         return postRepository.save(post).getId();
