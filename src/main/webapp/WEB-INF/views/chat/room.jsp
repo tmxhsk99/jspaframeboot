@@ -12,7 +12,7 @@
     <title>Room</title>
     <script src="/webjars/jquery/dist/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
     <h1>${room.name} ${room.id}</h1>
@@ -31,37 +31,24 @@
         let member = $('.content').data('member');
 
         // handshack
-        var sock = new SockJS("/stomp-chat");
-        var client = Stomp.over(sock); //1. SockJS를 내부에 들고 있는 client를 내어준다.
+        let sock = new SockJS("/stomp-chat");
+        // 1. SockJS를 내부에 들고 있는 client를 내어준다.
+        let client = Stomp.over(sock);
 
-        // onopen : connection 이 맺어졌을 때 의 callback
-        sock.onopen = function () {
-            // send : connection 으로 message를 전달
-            // connection이 맺어진 후 가입(join) 메시지 전달.
-            sock.send(JSON.stringify(
-                {
-                    chatRoomId: roomId,
-                    type: 'JOIN',
-                    writer: member
-                }
-                ));
-            // onmessage : message를 받았을 때의 callback
-            sock.onmessage = function (e){
-                const content = JSON.parse(e.data);
+        // 2. connection이 맺어지면 실행된다.
+        client.connect({}, function () {
+            // 3. send(path, header, message)로 메시지를 보낼 수 있다.
+            client.send('/publish/chat/join',{},JSON.stringify({chatRoomId: roomId, writer: member}));
+            // 4. subscribe(path, callback)로 메시지를 받을 수 있다. callback 첫번째 파라미터의 body로 메시지의 내용이 들어온다.
+            client.subscribe('/subscribe/chat/room/' + roomId,function(chat){
+                let content = JSON.parse(chat.body);
                 chatBox.append('<li>' + content.message + '(' + content.writer + ')</li>');
-            }
-        }
+            })
+        })
 
         sendBtn.click(function (){
             const message = messageInput.val();
-            sock.send(JSON.stringify(
-                {
-                    chatRoomId: roomId,
-                    type: 'CHAT',
-                    message: message,
-                    writer: member
-                }
-                ));
+            client.send('/publish/chat/message',{}, JSON.stringify({chatRoomId: roomId, message: message, writer: member}));
             messageInput.val('');
         })
     });

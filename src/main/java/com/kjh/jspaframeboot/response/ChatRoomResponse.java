@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
-@Builder
 public class ChatRoomResponse {
     private final Long id;
     private final String name;
@@ -27,7 +26,6 @@ public class ChatRoomResponse {
         this.name = chatRoom.getName();
         this.maxChatRoomUser = chatRoom.getMaxChatRoomUser();
     }
-
     @Builder
     public ChatRoomResponse(Long id, String name, Integer maxChatRoomUser) {
         this.id = id;

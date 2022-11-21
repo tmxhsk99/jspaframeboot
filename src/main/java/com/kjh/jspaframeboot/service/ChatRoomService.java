@@ -21,6 +21,18 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
 
+    public void genDefaultRoom(){
+        for(int i = 0 ; i < 3 ; i++){
+            chatRoomRepository.save(ChatRoom.builder()
+                    .name("default"+i)
+                    .maxChatRoomUser(10)
+                    .build());
+        }
+    }
+    public Long getAllRoomCount(){
+        long count = chatRoomRepository.count();
+        return count;
+    }
     public List<ChatRoom> getAllChatRooms() {
         List<ChatRoom> allRooms = chatRoomRepository.findAll();
         return allRooms;

@@ -14,7 +14,7 @@
 <body>
     <h1>RoomList</h1>
     <c:forEach var="room" items="${rooms}">
-        <li><a href="/chat/rooms/${room.id}"></a></li>
+        <li><a href="/chat/rooms/${room.id}">Room <c:out value="${room.id}"></c:out></a></li>
     </c:forEach>
 
 </body>

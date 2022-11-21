@@ -22,7 +22,7 @@ public class ChatRoomController {
     private final AtomicInteger seq = new AtomicInteger(0);
 
     //테스트 용
-    @GetMapping("/chat/chatRoom")
+    @GetMapping("/chat/test")
     public String chatRoomTest(Model model){
         log.info("ChatController.chatRoom()");
         model.addAttribute("chatRoomNo", "1");
@@ -31,9 +31,13 @@ public class ChatRoomController {
 
     @GetMapping("/chat/rooms")
     public String rooms(Model model){
+        Long allRoomCount = chatRoomService.getAllRoomCount();
+        if(allRoomCount == 0L){//0인경우 기본방 3개를 만들어준다.
+            chatRoomService.genDefaultRoom();
+        }
         //기본 조건 없는 chatRoom 리스트
         model.addAttribute("rooms", chatRoomService.getList(ChatRoomSearch.builder().build()));
-        return "/chat/room-list";
+        return "chat/room-list";
     }
 
     @GetMapping("/chat/rooms/{id}")
@@ -42,7 +46,7 @@ public class ChatRoomController {
         model.addAttribute("room",chatRoom);
         //회원 이름 부여
         model.addAttribute("member","member" + seq.incrementAndGet());
-        return "/chat/room";
+        return "chat/room";
     }
 
 
