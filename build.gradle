@@ -55,7 +55,8 @@ dependencies {
     implementation 'org.webjars:sockjs-client:1.5.1'
     // https://mvnrepository.com/artifact/org.webjars/webjars-locator
     implementation 'org.webjars:webjars-locator:0.46'
-
+    // WebSocket server(client) to server libarary 일단은 사용할 필요는 없어 보인다.
+    //implementation 'org.java-websocket:Java-WebSocket:1.5.3'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
