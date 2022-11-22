@@ -21,6 +21,10 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
 
+
+    /**
+     * 기본 방을 생성한다...
+     */
     public void genDefaultRoom(){
         for(int i = 0 ; i < 3 ; i++){
             chatRoomRepository.save(ChatRoom.builder()
