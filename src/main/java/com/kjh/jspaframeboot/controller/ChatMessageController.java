@@ -31,7 +31,10 @@ public class ChatMessageController {
         template.convertAndSend("/subscribe/chat/room/" + message.getChatRoomId(),message);
     }
 
-
+    /**
+     * 외부서버에서 Post방식으로 메시지를 형식에 밪게 보내면 외부에서도 채팅이 가능하다...
+     * @param message
+     */
     @ResponseBody
     @PostMapping("/chat/external/client/server")
     public void realTimeWebSocketTestRoute(@RequestBody ChatMessage message){
